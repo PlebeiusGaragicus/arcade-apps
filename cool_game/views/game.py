@@ -59,7 +59,7 @@ class Game(Singleton):
     def start(self):
         logger.info("game::start()")
 
-        from cool_game.splash_screen import SplashScreen
+        from cool_game.views.splash_screen import SplashScreen
         view = SplashScreen()
         self.window.show_view(view)
 

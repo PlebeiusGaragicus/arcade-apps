@@ -1,3 +1,4 @@
+import time
 import logging
 logger = logging.getLogger("lnarcade")
 
@@ -7,16 +8,17 @@ import arcade
 class SnekView(arcade.View):
     def __init__(self):
         super().__init__()
-        self.alpha = 0  # initialize alpha to 0 (fully transparent)
+        self.start_time = time.time()
 
     
     def on_show_view(self):
-        logger.info("Starting snek gameplay")
+        logger.info("Starting gameplay view")
         arcade.set_background_color(arcade.color.BLUE)
 
 
     def on_update(self, delta_time):
-        pass
+        if time.time() > self.start_time + 5: # self-destruct in ten seconds
+            arcade.exit()
 
 
     def on_draw(self):

@@ -1,4 +1,6 @@
 {
     "name": "snek",
-    "data": 34
+    "icon": "₪",
+    "icon_color": "#f00fff",
+    "right_icon": "\uE289"
 }
