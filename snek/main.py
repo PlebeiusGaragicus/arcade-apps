@@ -1,3 +1,4 @@
+from time import sleep
 import arcade
 import random
 
@@ -33,6 +34,8 @@ class Snake(arcade.Window):
         arcade.draw_xywh_rectangle_filled(self.apple_x, self.apple_y, TILE_SIZE, TILE_SIZE, arcade.color.RED)
 
     def update(self, delta_time):
+        sleep(1 / self.snake_speed)
+
         head_x = self.snake_list[-1][0] + self.change_x
         head_y = self.snake_list[-1][1] + self.change_y
         

@@ -1,0 +1,1 @@
+from modules.games.snek.snek import Handler

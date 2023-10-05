@@ -1,0 +1,1 @@
+from modules.games.template_game.demo import Handler

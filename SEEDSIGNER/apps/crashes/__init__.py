@@ -1,0 +1,1 @@
+from modules.apps.crashes.crash import Handler

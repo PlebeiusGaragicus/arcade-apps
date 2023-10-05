@@ -1,0 +1,1 @@
+from modules.apps.demo.demo import Handler
