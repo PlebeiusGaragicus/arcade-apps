@@ -2,7 +2,7 @@ import time
 from dataclasses import dataclass
 from typing import Callable
 import logging
-logger = logging.getLogger("game")
+logger = logging.getLogger()
 
 import arcade
 
@@ -22,6 +22,7 @@ class MenuView(arcade.View):
         self.last_input = time.time()
         self.menu_actions = [
             MenuAction("Start Game", self.start_game),
+            # MenuAction("Options", arcade.close_window),
             MenuAction("Exit", arcade.close_window),
         ]
         self.selected_menu_item = 0
