@@ -43,16 +43,16 @@ class GameplayView(arcade.View):
 
     def on_update(self, delta_time):
         if self.life <= 0 or self.alive is False:
-            from template.views.menu import MenuView
-            next_view = MenuView()
+            from template.views.results import ResultsView
+            next_view = ResultsView(self)
             self.window.show_view(next_view)
 
         if self.paused:
             return
 
-        # lose 1 life every 1 second
+        # lose life every second
         if time.time() > self.last_life_loss + 1:
-            self.life -= 1
+            self.life -= 25
             self.last_life_loss = time.time()
             logger.info("life: %s", self.life)
 
