@@ -1,0 +1,7 @@
+{
+    "name": "Example Game",
+    "version": "0.0.1",
+    "data": 69,
+    "cheats_enabled": true,
+    "skip_intro": true
+}

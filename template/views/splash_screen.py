@@ -1,18 +1,17 @@
-import arcade
-
-import os
 import time
 import logging
-logger = logging.getLogger("game")
+logger = logging.getLogger()
+
+from template.game import Game
 
 import arcade
 
 # for type hinting
 from pyglet.media import Player
 
-SPLASH_SCREEN_TIME_DELAY = 3
+SPLASH_SCREEN_TIME_DELAY = 2
 
-class SplashScreen(arcade.View):
+class SplashScreenView(arcade.View):
     def __init__(self):
         super().__init__()
         self.alpha = 0  # initialize alpha to 0 (fully transparent)
@@ -27,9 +26,9 @@ class SplashScreen(arcade.View):
 
 
     def on_update(self, delta_time):
-        if time.time() > self.start_time + SPLASH_SCREEN_TIME_DELAY:
-            from cool_game.views.snek import SnekView
-            next_view = SnekView()
+        if time.time() > self.start_time + SPLASH_SCREEN_TIME_DELAY or Game.get_instance().manifest.get('skip_intro', False):
+            from template.views.menu import MenuView
+            next_view = MenuView()
             self.window.show_view(next_view)
 
 

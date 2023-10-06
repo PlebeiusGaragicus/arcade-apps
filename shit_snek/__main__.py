@@ -3,8 +3,7 @@ import arcade
 import random
 
 # Constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH, SCREEN_HEIGHT = arcade.get_display_size()
 SCREEN_TITLE = "Snake Game"
 TILE_SIZE = 20
 SNAKE_SPEED = 5
@@ -69,6 +68,7 @@ class Snake(arcade.Window):
             self.change_x = TILE_SIZE
             self.change_y = 0
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     window = Snake()
     arcade.run()

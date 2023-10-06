@@ -1,27 +1,23 @@
+import os
+import json
 import logging
-logger = logging.getLogger("game")
+logger = logging.getLogger()
+
+from template.logger import setup_logging
 
 import arcade
 
 
-
 class Singleton:
     _instance = None
-
     def __init__(self):
         raise Exception("Cannot directly instantiate a Singleton. Access via get_instance()")
-
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
             cls._instance = cls.__new__(cls)
         return cls._instance
 
-
-
-
-FULLSCREEN = True
-SCREEN_TITLE = "testing a game"
 
 class Game(Singleton):
     window: arcade.Window = None
@@ -40,27 +36,31 @@ class Game(Singleton):
         game = cls.__new__(cls)
         cls._instance = game
 
+        setup_logging()
 
-        width, height = arcade.get_display_size()
+        # load manifest
+        manifest_path = os.path.join( os.path.dirname(os.path.abspath(__file__)), 'manifest.json' )
+        with open( manifest_path ) as f:
+            game.manifest = json.load(f)
 
-        width //= 2
-        height //= 2
+        logger.debug("manifest: %s", game.manifest)
 
-        if FULLSCREEN:
-            game.window = arcade.Window(title=SCREEN_TITLE, fullscreen=True)
-        else:
-            game.window = arcade.Window(width=width, height=height, title=SCREEN_TITLE)
+        game.width, game.height = arcade.get_display_size()
 
+        window_title = game.manifest['name']
+
+        # TODO - consider making all windows resizable in order to test layout for multiple monitors
+        game.window = arcade.Window(width=game.width, height=game.height, title=window_title, fullscreen=False, style="borderless")
         game.window.set_mouse_visible(False)
 
         return cls._instance
 
 
     def start(self):
-        logger.info("game::start()")
+        logger.info("start()")
 
-        from cool_game.views.splash_screen import SplashScreen
-        view = SplashScreen()
+        from template.views.splash_screen import SplashScreenView
+        view = SplashScreenView()
         self.window.show_view(view)
 
         arcade.run()
