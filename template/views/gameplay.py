@@ -14,7 +14,14 @@ TOP_BAR_HEIGHT = 30
 window_width, window_height = arcade.get_display_size()
 
 
+COOLDOWN_DIRECTIONAL_SECONDS = 0.1
 
+
+# These can be anything, just make sure they're unique
+KEY_UP = arcade.key.W
+KEY_DOWN = arcade.key.S
+KEY_LEFT = arcade.key.A
+KEY_RIGHT = arcade.key.D
 
 
 
@@ -47,40 +54,44 @@ class Player(arcade.Sprite):
 
 
 class CooldownKey():
-    def __init__(self, symbol, cooldown_seconds):
-        self.symbol = symbol
+    def __init__(self, key, cooldown_seconds):
+        self.key = key
         self.cooldown_seconds = cooldown_seconds
         self.pressed = False
         self.last_pressed_time = None
 
-    def on_key_press(self, symbol: int, modifiers: int):
-        if symbol == self.symbol:
-            if self.last_pressed_time is None or time.time() > self.last_pressed_time + self.cooldown_seconds:
-                self.last_pressed_time = time.time()
-                self.pressed = True
-                return True
-            else:
-                print(f"cooldown for {self.symbol} not ready yet. {time.time() - self.last_pressed_time}")
+    def run(self, key: int = None):
+
+        # for the on_key_press() function
+        if key is not None:
+            if key == self.key:
                 self.pressed = True
                 return False
+            else:
+                return False
+        
+        # for the on_update() function
         else:
-            return False
+            if self.pressed is True:
+                if self.last_pressed_time is None or time.time() > self.last_pressed_time + self.cooldown_seconds:
+                    self.last_pressed_time = time.time()
+                    return True
+                else:
+                    print(f"cooldown for {self.key} not ready yet. {time.time() - self.last_pressed_time}")
+                    return False
+            else:
+                return False
 
-    def on_key_release(self, symbol: int, modifiers: int):
-        if symbol == self.symbol:
+    def on_key_release(self, key: int):
+        if key == self.key:
             self.pressed = False
             return True
         else:
             return False
 
-    def update_if_pressed(self):
-        if self.pressed is True:
-            if self.last_pressed_time is None or time.time() > self.last_pressed_time + self.cooldown_seconds:
-                self.last_pressed_time = time.time()
-                return True
-            else:
-                print(f"cooldown for {self.symbol} not ready yet. {time.time() - self.last_pressed_time}")
-                return False
+
+
+
 
 
 class GameplayView(arcade.View):
@@ -97,10 +108,16 @@ class GameplayView(arcade.View):
         self.paused = False
         self.escape_pressed_time = None
 
-        self.cooldown_left = CooldownKey(arcade.key.LEFT, 0.1)
-        self.cooldown_right = CooldownKey(arcade.key.RIGHT, 0.1)
-        self.cooldown_up = CooldownKey(arcade.key.UP, 0.1)
-        self.cooldown_down = CooldownKey(arcade.key.DOWN, 0.1)
+        self.cooldown_keys = {
+            KEY_UP: CooldownKey(arcade.key.UP, COOLDOWN_DIRECTIONAL_SECONDS),
+            KEY_DOWN: CooldownKey(arcade.key.DOWN, COOLDOWN_DIRECTIONAL_SECONDS),
+            KEY_LEFT: CooldownKey(arcade.key.LEFT, COOLDOWN_DIRECTIONAL_SECONDS),
+            KEY_RIGHT: CooldownKey(arcade.key.RIGHT, COOLDOWN_DIRECTIONAL_SECONDS),
+        }
+        # self.cooldown_left = CooldownKey(arcade.key.LEFT, 0.1)
+        # self.cooldown_right = CooldownKey(arcade.key.RIGHT, 0.1)
+        # self.cooldown_up = CooldownKey(arcade.key.UP, 0.1)
+        # self.cooldown_down = CooldownKey(arcade.key.DOWN, 0.1)
 
 
 
@@ -126,14 +143,26 @@ class GameplayView(arcade.View):
 
         self.player.update()
 
-        if self.cooldown_up.update_if_pressed():
-            self.player.dir_y += 1
-        if self.cooldown_down.update_if_pressed():
-            self.player.dir_y += -1
-        if self.cooldown_left.update_if_pressed():
-            self.player.dir_x += -1
-        if self.cooldown_right.update_if_pressed():
-            self.player.dir_x += 1
+        self.handle_cooldown_keys()
+        # # if self.cooldown_up.run():
+        # if self.cooldown_keys[KEY_UP].run():
+        #     logger.info("up")
+        #     self.player.dir_y += 1
+
+        # # if self.cooldown_down.run():
+        # if self.cooldown_keys[KEY_DOWN].run():
+        #     logger.info("down")
+        #     self.player.dir_y += -1
+
+        # # if self.cooldown_left.run():
+        # if self.cooldown_keys[KEY_LEFT].run():
+        #     logger.info("left")
+        #     self.player.dir_x += -1
+
+        # # if self.cooldown_right.run():
+        # if self.cooldown_keys[KEY_RIGHT].run():
+        #     logger.info("right")
+        #     self.player.dir_x += 1
 
 
 
@@ -144,6 +173,9 @@ class GameplayView(arcade.View):
 
         # show life in top left corner
         arcade.draw_text(f"Life: {self.life}", 10, self.window.height * 0.9, arcade.color.WHITE, font_size=20, anchor_x="left")
+
+        # show player x and y direction
+        arcade.draw_text(f"dir_x: {self.player.dir_x} / dir_y: {self.player.dir_y}", window_width // 2, self.window.height * 0.9, arcade.color.YELLOW, font_size=20, anchor_x="center")
 
         # draw player
         self.player.draw()
@@ -163,53 +195,64 @@ class GameplayView(arcade.View):
 
 
 
-    def on_key_press(self, symbol: int, modifiers: int):
+    def on_key_press(self, key: int, modifiers: int):
 
-        if symbol == arcade.key.ESCAPE:
+        print(modifiers)
+
+        if key == None:
+            logger.critical("FUCK FUCK")
+
+        if key == arcade.key.ESCAPE:
             logger.info("escape")
             self.escape_pressed_time = time.time()
             self.paused = True
 
-        elif symbol == arcade.key.P:
+        elif key == arcade.key.P:
             logger.info("pause")
             self.paused = not self.paused
         
         if self.paused:
             return
 
-        elif symbol == arcade.key.SPACE:
+        elif key == arcade.key.SPACE:
             logger.info("space")
             self.life += 10
 
+        print("key: ", key)
 
-        # these can't be elif!
-        if self.cooldown_up.on_key_press(symbol, modifiers):
-            logger.info("up")
-            self.player.dir_y += 1
-        if self.cooldown_down.on_key_press(symbol, modifiers):
-            logger.info("down")
-            self.player.dir_y += -1
-        if self.cooldown_left.on_key_press(symbol, modifiers):
-            logger.info("left")
-            self.player.dir_x += -1
-        if self.cooldown_right.on_key_press(symbol, modifiers):
-            logger.info("right")
-            self.player.dir_x += 1
+        self.handle_cooldown_keys(key)
+        # # these can't be elif!
+        # if self.cooldown_up.on_key_press(key):
+        #     logger.info("up")
+        #     self.player.dir_y += 1
+        # if self.cooldown_down.on_key_press(key):
+        #     logger.info("down")
+        #     self.player.dir_y += -1
+        # if self.cooldown_left.on_key_press(key):
+        #     logger.info("left")
+        #     self.player.dir_x += -1
+        # if self.cooldown_right.on_key_press(key):
+        #     logger.info("right")
+        #     self.player.dir_x += 1
 
     
-    def on_key_release(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.ESCAPE:
+    def on_key_release(self, key: int, modifiers: int):
+        if key == arcade.key.ESCAPE:
             logger.info("escape released")
             self.escape_pressed_time = None
             self.paused = False
         
         if self.paused:
             return
-        
-        self.cooldown_up.on_key_release(symbol, modifiers)
-        self.cooldown_down.on_key_release(symbol, modifiers)
-        self.cooldown_left.on_key_release(symbol, modifiers)
-        self.cooldown_right.on_key_release(symbol, modifiers)
+
+        # self.cooldown_up.on_key_release(key)
+        # self.cooldown_down.on_key_release(key)
+        # self.cooldown_left.on_key_release(key)
+        # self.cooldown_right.on_key_release(key)
+        self.cooldown_keys[KEY_UP].on_key_release(key)
+        self.cooldown_keys[KEY_DOWN].on_key_release(key)
+        self.cooldown_keys[KEY_LEFT].on_key_release(key)
+        self.cooldown_keys[KEY_RIGHT].on_key_release(key)
 
 
 
@@ -225,3 +268,25 @@ class GameplayView(arcade.View):
         # TODO: twine between colors as time elapses
         arcade.draw_arc_filled(center_x, center_y, radius, radius, arcade.color.WHITE, end_angle, start_angle, 90)
         arcade.draw_text(f"Hold <ESCAPE> to quit", center_x, center_y - radius, arcade.color.WHITE_SMOKE, font_size=20, anchor_x="center", anchor_y="center")
+
+
+    def handle_cooldown_keys(self, key: int = None):
+        # if self.cooldown_up.run():
+        if self.cooldown_keys[KEY_UP].run(key=key):
+            logger.info("up")
+            self.player.dir_y += 1
+
+        # if self.cooldown_down.run():
+        if self.cooldown_keys[KEY_DOWN].run(key=key):
+            logger.info("down")
+            self.player.dir_y += -1
+
+        # if self.cooldown_left.run():
+        if self.cooldown_keys[KEY_LEFT].run(key=key):
+            logger.info("left")
+            self.player.dir_x += -1
+
+        # if self.cooldown_right.run():
+        if self.cooldown_keys[KEY_RIGHT].run(key=key):
+            logger.info("right")
+            self.player.dir_x += 1
