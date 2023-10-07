@@ -1,0 +1,8 @@
+{
+    "name": "snek",
+    "skip_intro": false,
+    "settings": {
+        "difficulty": "easy",
+        "cheats_enabled": true
+    }
+}
