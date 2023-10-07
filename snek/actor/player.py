@@ -5,6 +5,7 @@ logger = logging.getLogger()
 import arcade
 
 from snek.app import GAME_WINDOW
+from snek.config import LIFE_SUCK_RATE
 
 # NOTE: only for MacOS... need to test on rpi
 # this is because of the menu bar / camera cutout on the macbook air
@@ -29,7 +30,7 @@ class Player(arcade.Sprite):
     def update(self):
         # lose life every second
         if time.time() > self.last_life_loss + 1:
-            self.life -= 5
+            self.life -= LIFE_SUCK_RATE
             self.last_life_loss = time.time()
             # logger.info("life: %s", self.life)
 

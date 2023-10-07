@@ -2,35 +2,28 @@ import time
 import logging
 logger = logging.getLogger()
 
-from snek.app import Game, GAME_WINDOW
+from gamelib.view.splash_screen_template import SplashScreenViewTemplate
+
+from snek.app import GAME_WINDOW, MY_DIR
 
 import arcade
 
-# for type hinting
-from pyglet.media import Player
-
-SPLASH_SCREEN_TIME_DELAY = 2
-
-class SplashScreenView(arcade.View):
-    def __init__(self):
-        super().__init__()
+class SplashScreenView(SplashScreenViewTemplate):
+    def __init__(self, next_view: arcade.View, skip_intro: bool = False):
+        super().__init__(next_view, MY_DIR, skip_intro)
         self.alpha = 0  # initialize alpha to 0 (fully transparent)
-        self.music_player: Player = None
-        self.theme_len = 0
 
 
     def on_show_view(self):
-        logger.info("Starting SplashScreen")
+        super().on_show_view()
         arcade.set_background_color(arcade.color.BLACK)
-        self.start_time = time.time()
+
+
 
 
     def on_update(self, delta_time):
-        # TODO - fix this... just don't call this class
-        if time.time() > self.start_time + SPLASH_SCREEN_TIME_DELAY or Game.get_instance().manifest.get('skip_intro', False):
-            from snek.views.menu_screen import MenuView
-            next_view = MenuView()
-            self.window.show_view(next_view)
+        #NOTE: you NEED to call super().on_update() in order to play the theme music!!!!
+        super().on_update(delta_time)
 
 
     def on_draw(self):

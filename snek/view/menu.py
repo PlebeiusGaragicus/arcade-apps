@@ -1,57 +1,41 @@
 import time
-from dataclasses import dataclass
-from typing import Callable
 import logging
 logger = logging.getLogger()
 
 import arcade
 
+from gamelib.model.MenuAction import MenuAction
+from gamelib.view.menu_screen_template import MenuViewTemplate
+
 from snek.config import AFK_TIMEOUT
 
-@dataclass
-class MenuAction:
-    name: str
-    action: Callable
-    args: list = None
-    kwargs: dict = None
 
-    def execute(self):
-        if self.args is None:
-            self.args = []
-        if self.kwargs is None:
-            self.kwargs = {}
-        self.action(*self.args, **self.kwargs)
-
-
-class MenuView(arcade.View):
+class MenuView(MenuViewTemplate):
     def __init__(self):
-        super().__init__()
-        self.last_input = time.time()
+        super().__init__( AFK_TIMEOUT )
         self.selected_menu_item = 0
 
-        self.menu_actions = [
-            MenuAction("Start Game", self.start_game),
-            # MenuAction("Options", arcade.close_window),
-            MenuAction("Exit", arcade.close_window),
-        ]
+        self.menu_actions.append( MenuAction("Start Game", self.start_game) )
+        self.menu_actions.append( MenuAction("Exit", arcade.close_window) )
+
 
 
     def start_game(self):
-        from snek.views.gameplay import GameplayView
+        from snek.view.gameplay import GameplayView
         next_view = GameplayView()
         self.window.show_view(next_view)
+
 
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.DARK_BROWN)
 
 
+
     def on_update(self, delta_time):
-        # self-destruct in ten seconds if no input (user is AFK)
-        if AFK_TIMEOUT > 0 and \
-            time.time() > self.last_input + AFK_TIMEOUT:
-                logger.warning("AFK timeout reached, exiting game - user is AFK!")
-                arcade.exit()
+        if super().is_user_afk():
+            arcade.exit() # TODO - maybe show a "you're afk" screen instead of just exiting the game? (like a screensaver or sample gameplay)
+
 
 
     def on_draw(self):
@@ -69,7 +53,7 @@ class MenuView(arcade.View):
 
 
     def on_key_press(self, symbol: int, modifiers: int):
-        self.last_input = time.time()
+        super().reset_afk_timer()
 
         if symbol == arcade.key.UP:
             if self.selected_menu_item > 0:

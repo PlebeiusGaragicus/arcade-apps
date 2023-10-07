@@ -7,10 +7,9 @@ import arcade
 
 from gamelib.cooldown_keys import CooldownKey, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 
-# from snek.config import WINDOW_WIDTH, WINDOW_HEIGHT, HOLD_TO_QUIT_SECONDS, COOLDOWN_DIRECTIONAL_SECONDS
 from snek.config import HOLD_TO_QUIT_SECONDS, COOLDOWN_DIRECTIONAL_SECONDS
 from snek.app import GAME_WINDOW
-from snek.actors.player import Player
+from snek.actor.player import Player
 
 
 
@@ -38,7 +37,7 @@ class GameplayView(arcade.View):
 
     def on_update(self, delta_time):
         if self.player.life <= 0 or self.alive is False:
-            from snek.views.results_screen import ResultsView
+            from snek.view.results import ResultsView
             next_view = ResultsView(self)
             self.window.show_view(next_view)
 
@@ -135,3 +134,7 @@ class GameplayView(arcade.View):
 
         if self.cooldown_keys[KEY_RIGHT].run(key=key):
             self.player.dir_x += 1
+
+    def revive(self):
+        self.player.alive = True
+        self.player.life = 100

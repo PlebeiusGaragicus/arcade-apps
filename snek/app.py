@@ -5,20 +5,14 @@ logger = logging.getLogger()
 
 import arcade
 
-from snek.logger import setup_logging
+from gamelib.logger import setup_logging
+from gamelib.model.singleton import Singleton
 
+MY_DIR = os.path.dirname(os.path.abspath(__file__))
 GAME_WINDOW: arcade.Window = None
 
 
-class Singleton:
-    _instance = None
-    def __init__(self):
-        raise Exception("Cannot directly instantiate a Singleton. Access via get_instance()")
-    @classmethod
-    def get_instance(cls):
-        if cls._instance is None:
-            cls._instance = cls.__new__(cls)
-        return cls._instance
+
 
 
 class Game(Singleton):
@@ -66,13 +60,27 @@ class Game(Singleton):
         global GAME_WINDOW
         GAME_WINDOW = self.window
 
-        if self.manifest.get('skip_intro', False):
-            from snek.views.menu_screen import MenuView
-            view = MenuView()
-            self.window.show_view(view)
-        else:
-            from snek.views.splash_screen import SplashScreenView
-            view = SplashScreenView()
-            self.window.show_view(view)
 
-        arcade.run()
+        from snek.view.splash import SplashScreenView
+        from snek.view.menu import MenuView
+
+        view = SplashScreenView( MenuView() )
+        self.window.show_view(view)
+
+        # if self.manifest.get('skip_intro', False):
+        #     from snek.view.menu_screen import MenuView
+        #     view = MenuView(self)
+        #     self.window.show_view(view)
+        # else:
+
+        try:
+            arcade.run()
+        except Exception as e:
+            # TODO - do something useful and cool here.. make my own exception view like the seedsigner!
+            logger.exception(e)
+            raise e
+
+    def start_gameplay(self):
+        from snek.view.gameplay import GameplayView
+        view = GameplayView()
+        self.window.show_view(view)

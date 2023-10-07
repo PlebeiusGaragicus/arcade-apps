@@ -10,8 +10,11 @@ AFK_TIMEOUT = 300 # 5 minutes (set to zero to diable)
 HOLD_TO_QUIT_SECONDS = 1.5
 
 
+
+
 ######################################
 # CUSTOM TO YOUR GAME
 ######################################
 COOLDOWN_DIRECTIONAL_SECONDS = 0.1
 
+LIFE_SUCK_RATE = 20
