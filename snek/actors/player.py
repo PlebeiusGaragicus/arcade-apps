@@ -4,7 +4,7 @@ logger = logging.getLogger()
 
 import arcade
 
-from template.config import WINDOW_WIDTH, WINDOW_HEIGHT
+from snek.app import GAME_WINDOW
 
 # NOTE: only for MacOS... need to test on rpi
 # this is because of the menu bar / camera cutout on the macbook air
@@ -36,12 +36,12 @@ class Player(arcade.Sprite):
         self.center_x += self.dir_x
         self.center_y += self.dir_y
 
-        if self.center_x > WINDOW_WIDTH - self.size // 2:
+        if self.center_x > GAME_WINDOW.width - self.size // 2:
             self.dir_x = -self.dir_x
         elif self.center_x < 0 + self.size // 2:
             self.dir_x = -self.dir_x
 
-        if self.center_y > WINDOW_HEIGHT - self.size // 2 - TOP_BAR_HEIGHT:
+        if self.center_y > GAME_WINDOW.height - self.size // 2 - TOP_BAR_HEIGHT:
             self.dir_y = -self.dir_y
         elif self.center_y < 0 + self.size // 2:
             self.dir_y = -self.dir_y

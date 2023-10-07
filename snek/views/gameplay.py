@@ -5,9 +5,12 @@ logger = logging.getLogger()
 
 import arcade
 
-from template.config import WINDOW_WIDTH, WINDOW_HEIGHT, HOLD_TO_QUIT_SECONDS, COOLDOWN_DIRECTIONAL_SECONDS
-from template.models.cooldown_keys import CooldownKey, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
-from template.actors.player import Player
+from gamelib.cooldown_keys import CooldownKey, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
+
+# from snek.config import WINDOW_WIDTH, WINDOW_HEIGHT, HOLD_TO_QUIT_SECONDS, COOLDOWN_DIRECTIONAL_SECONDS
+from snek.config import HOLD_TO_QUIT_SECONDS, COOLDOWN_DIRECTIONAL_SECONDS
+from snek.app import GAME_WINDOW
+from snek.actors.player import Player
 
 
 
@@ -35,7 +38,7 @@ class GameplayView(arcade.View):
 
     def on_update(self, delta_time):
         if self.player.life <= 0 or self.alive is False:
-            from template.views.results_screen import ResultsView
+            from snek.views.results_screen import ResultsView
             next_view = ResultsView(self)
             self.window.show_view(next_view)
 
@@ -52,18 +55,18 @@ class GameplayView(arcade.View):
         arcade.start_render()
 
         # show life in top left corner
-        arcade.draw_text(f"Life: {self.player.life}", 10, WINDOW_HEIGHT * 0.9, arcade.color.WHITE, font_size=20, anchor_x="left")
+        arcade.draw_text(f"Life: {self.player.life}", 10, GAME_WINDOW.height * 0.9, arcade.color.WHITE, font_size=20, anchor_x="left")
 
         # show player x and y direction
-        arcade.draw_text(f"dir_x: {self.player.dir_x} / dir_y: {self.player.dir_y}", WINDOW_WIDTH // 2, WINDOW_HEIGHT * 0.9, arcade.color.YELLOW, font_size=20, anchor_x="center")
+        arcade.draw_text(f"dir_x: {self.player.dir_x} / dir_y: {self.player.dir_y}", GAME_WINDOW.width // 2, GAME_WINDOW.height * 0.9, arcade.color.YELLOW, font_size=20, anchor_x="center")
 
         self.player.draw()
         # self.player.draw_hit_box(arcade.color.BLUE)
 
         if self.paused:
             # draw pause screen
-            arcade.draw_rectangle_filled(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_WIDTH, WINDOW_HEIGHT, arcade.color.BLACK_OLIVE + (200,))
-            arcade.draw_text("PAUSED", WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.75, arcade.color.YELLOW_ROSE, font_size=60, anchor_x="center", anchor_y="center")
+            arcade.draw_rectangle_filled(GAME_WINDOW.width / 2, GAME_WINDOW.height / 2, GAME_WINDOW.width, GAME_WINDOW.height, arcade.color.BLACK_OLIVE + (200,))
+            arcade.draw_text("PAUSED", GAME_WINDOW.width / 2, GAME_WINDOW.height * 0.75, arcade.color.YELLOW_ROSE, font_size=60, anchor_x="center", anchor_y="center")
 
         if self.escape_pressed_time is not None:
             time_elapsed = time.time() - self.escape_pressed_time

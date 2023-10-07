@@ -6,7 +6,7 @@ logger = logging.getLogger()
 
 import arcade
 
-from template.config import AFK_TIMEOUT
+from snek.config import AFK_TIMEOUT
 
 @dataclass
 class MenuAction:
@@ -36,7 +36,7 @@ class ResultsView(arcade.View):
         self.window.show_view(self.gameplay_view)
 
     def main_menu(self):
-        from template.views.menu_screen import MenuView
+        from snek.views.menu_screen import MenuView
         next_view = MenuView()
         self.window.show_view(next_view)
 

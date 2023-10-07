@@ -5,9 +5,9 @@ logger = logging.getLogger()
 
 import arcade
 
-from template.logger import setup_logging
-from template import config
+from snek.logger import setup_logging
 
+GAME_WINDOW: arcade.Window = None
 
 
 class Singleton:
@@ -23,6 +23,7 @@ class Singleton:
 
 class Game(Singleton):
     window: arcade.Window = None
+    manifest: dict = None
 
     @classmethod
     def get_instance(cls):
@@ -47,14 +48,13 @@ class Game(Singleton):
 
         logger.debug("manifest: %s", game.manifest)
 
-        config.WINDOW_WIDTH, config.WINDOW_HEIGHT = arcade.get_display_size()
-
+        display_width, display_height = arcade.get_display_size()
 
         window_title = game.manifest['name']
 
         # TODO - consider making all windows resizable in order to test layout for multiple monitors
-        # game.window = arcade.Window(width=game.width, height=game.height, title=window_title, fullscreen=False, style="borderless")
-        game.window = arcade.Window(width=config.WINDOW_WIDTH, height=config.WINDOW_HEIGHT, title=window_title, fullscreen=False, style="borderless")
+        game.window = arcade.Window(width=display_width, height=display_height, title=window_title, fullscreen=False, style="borderless")
+
         game.window.set_mouse_visible(False)
 
         return cls._instance
@@ -63,8 +63,16 @@ class Game(Singleton):
     def start(self):
         logger.info("start()")
 
-        from template.views.splash_screen import SplashScreenView
-        view = SplashScreenView()
-        self.window.show_view(view)
+        global GAME_WINDOW
+        GAME_WINDOW = self.window
+
+        if self.manifest.get('skip_intro', False):
+            from snek.views.menu_screen import MenuView
+            view = MenuView()
+            self.window.show_view(view)
+        else:
+            from snek.views.splash_screen import SplashScreenView
+            view = SplashScreenView()
+            self.window.show_view(view)
 
         arcade.run()

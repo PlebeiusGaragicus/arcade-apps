@@ -6,7 +6,7 @@ logger = logging.getLogger()
 
 import arcade
 
-from template.config import AFK_TIMEOUT
+from snek.config import AFK_TIMEOUT
 
 @dataclass
 class MenuAction:
@@ -15,34 +15,43 @@ class MenuAction:
     args: list = None
     kwargs: dict = None
 
+    def execute(self):
+        if self.args is None:
+            self.args = []
+        if self.kwargs is None:
+            self.kwargs = {}
+        self.action(*self.args, **self.kwargs)
+
 
 class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
         self.last_input = time.time()
+        self.selected_menu_item = 0
+
         self.menu_actions = [
             MenuAction("Start Game", self.start_game),
             # MenuAction("Options", arcade.close_window),
             MenuAction("Exit", arcade.close_window),
         ]
-        self.selected_menu_item = 0
 
 
     def start_game(self):
-        logger.info("Starting game")
-        from template.views.gameplay import GameplayView
+        from snek.views.gameplay import GameplayView
         next_view = GameplayView()
         self.window.show_view(next_view)
 
+
     def on_show_view(self):
-        logger.info("Starting gameplay view")
         arcade.set_background_color(arcade.color.DARK_BROWN)
 
 
     def on_update(self, delta_time):
-        if time.time() > self.last_input + AFK_TIMEOUT: # self-destruct in ten seconds if no input (user is AFK)
-            logger.warning("AFK timeout reached, exiting game - user is AFK!")
-            arcade.exit()
+        # self-destruct in ten seconds if no input (user is AFK)
+        if AFK_TIMEOUT > 0 and \
+            time.time() > self.last_input + AFK_TIMEOUT:
+                logger.warning("AFK timeout reached, exiting game - user is AFK!")
+                arcade.exit()
 
 
     def on_draw(self):
@@ -65,13 +74,15 @@ class MenuView(arcade.View):
         if symbol == arcade.key.UP:
             if self.selected_menu_item > 0:
                 self.selected_menu_item -= 1
+
         elif symbol == arcade.key.DOWN:
             if self.selected_menu_item < len(self.menu_actions) - 1:
                 self.selected_menu_item += 1
 
         elif symbol == arcade.key.ENTER:
             logger.info("enter")
-            self.menu_actions[self.selected_menu_item].action()
+            # self.menu_actions[self.selected_menu_item].action()
+            self.menu_actions[self.selected_menu_item].execute()
 
         elif symbol == arcade.key.ESCAPE:
             logger.info("escape")

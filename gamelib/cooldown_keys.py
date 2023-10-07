@@ -34,7 +34,6 @@ class CooldownKey():
                     self.last_pressed_time = time.time()
                     return True
                 else:
-                    print(f"cooldown for {self.key} not ready yet. {time.time() - self.last_pressed_time}")
                     return False
             else:
                 return False
