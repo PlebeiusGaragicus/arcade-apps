@@ -3,9 +3,11 @@ import json
 import logging
 logger = logging.getLogger()
 
-from template.logger import setup_logging
-
 import arcade
+
+from template.logger import setup_logging
+from template import config
+
 
 
 class Singleton:
@@ -45,12 +47,15 @@ class Game(Singleton):
 
         logger.debug("manifest: %s", game.manifest)
 
-        game.width, game.height = arcade.get_display_size()
+        # game.width, game.height = arcade.get_display_size()
+        config.WINDOW_WIDTH, config.WINDOW_HEIGHT = arcade.get_display_size()
+
 
         window_title = game.manifest['name']
 
         # TODO - consider making all windows resizable in order to test layout for multiple monitors
-        game.window = arcade.Window(width=game.width, height=game.height, title=window_title, fullscreen=False, style="borderless")
+        # game.window = arcade.Window(width=game.width, height=game.height, title=window_title, fullscreen=False, style="borderless")
+        game.window = arcade.Window(width=config.WINDOW_WIDTH, height=config.WINDOW_HEIGHT, title=window_title, fullscreen=False, style="borderless")
         game.window.set_mouse_visible(False)
 
         return cls._instance

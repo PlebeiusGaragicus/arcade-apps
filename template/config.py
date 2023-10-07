@@ -1,5 +1,10 @@
-# import arcade
+WINDOW_WIDTH = None
+WINDOW_HEIGHT = None
 
-# window_width, window_height = arcade.get_display_size()
+AFK_TIMEOUT = 300 # 5 minutes
 
-AFK_TIMEOUT = 600 # 10 minutes
+
+
+HOLD_TO_QUIT_SECONDS = 1.5
+
+COOLDOWN_DIRECTIONAL_SECONDS = 0.1

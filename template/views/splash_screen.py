@@ -2,7 +2,7 @@ import time
 import logging
 logger = logging.getLogger()
 
-from template.game import Game
+from template.app import Game
 
 import arcade
 
@@ -27,7 +27,7 @@ class SplashScreenView(arcade.View):
 
     def on_update(self, delta_time):
         if time.time() > self.start_time + SPLASH_SCREEN_TIME_DELAY or Game.get_instance().manifest.get('skip_intro', False):
-            from template.views.menu import MenuView
+            from template.views.menu_screen import MenuView
             next_view = MenuView()
             self.window.show_view(next_view)
 

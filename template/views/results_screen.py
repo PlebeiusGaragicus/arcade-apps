@@ -36,7 +36,7 @@ class ResultsView(arcade.View):
         self.window.show_view(self.gameplay_view)
 
     def main_menu(self):
-        from template.views.menu import MenuView
+        from template.views.menu_screen import MenuView
         next_view = MenuView()
         self.window.show_view(next_view)
 

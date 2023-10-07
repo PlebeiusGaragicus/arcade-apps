@@ -1,3 +1,3 @@
 if __name__ == '__main__':
-    from template.game import Game
+    from template.app import Game
     Game.get_instance().start()
