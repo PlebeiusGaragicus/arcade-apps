@@ -13,6 +13,10 @@ class CooldownKey():
         self.cooldown_seconds = cooldown_seconds
         self.pressed = False
         self.last_pressed_time = None
+    
+    def reset(self):
+        self.pressed = False
+        self.last_pressed_time = None
 
     def run(self, key: int = None):
         """

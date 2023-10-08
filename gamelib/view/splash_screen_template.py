@@ -15,6 +15,7 @@ class SplashScreenViewTemplate(arcade.View):
         self.next_view: arcade.View = next_view
         self.music_player: Player = None
         self.start_time = time.time()
+        self.skip_intro = skip_intro
 
         sound_path = os.path.join(game_directory, 'resources', 'sounds', 'intro.wav')
 
@@ -25,14 +26,11 @@ class SplashScreenViewTemplate(arcade.View):
     def on_show_view(self):
         self.player = arcade.sound.play_sound( self.theme_sound )
 
-        # raise NotImplementedError("on_show_view() not implemented - you need to implement this in your subclass!")
-
 
     def on_update(self, delta_time):
-        if time.time() > self.start_time + self.theme_len: # wait for theme to finish
+        if time.time() > self.start_time + self.theme_len or self.skip_intro: # wait for theme to finish
             arcade.sound.stop_sound( self.player )
             self.window.show_view(self.next_view)
-        # raise NotImplementedError("on_update() not implemented - you need to implement this in your subclass!")
 
 
     def on_draw(self):
