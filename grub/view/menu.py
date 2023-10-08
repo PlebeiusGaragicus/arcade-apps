@@ -16,6 +16,10 @@ class MenuView(MenuViewTemplate):
         self.selected_menu_item = 0
 
         self.menu_actions.append( MenuAction("Start Game", self.start_game) )
+        self.menu_actions.append( MenuAction("Power-up", None) )
+        self.menu_actions.append( MenuAction("Load Game", None) )
+        self.menu_actions.append( MenuAction("Save Game", None) )
+        self.menu_actions.append( MenuAction("Options", None) )
         self.menu_actions.append( MenuAction("Exit", arcade.close_window) )
 
 
@@ -46,10 +50,13 @@ class MenuView(MenuViewTemplate):
         for i, menu_item in enumerate(self.menu_actions):
             if i == self.selected_menu_item:
                 color = arcade.color.YELLOW
-                arcade.draw_text(">", x - 30, y - i * 50, color, font_size=30, anchor_x="left")
+                menu_item_size = 40
+                arcade.draw_text(">", x - 40, y - i * 50, color, font_size=40, anchor_x="left")
             else:
+                menu_item_size = 30
                 color = arcade.color.AIR_FORCE_BLUE
-            arcade.draw_text(menu_item.name, x, y - i * 50, color, font_size=30, anchor_x="left")
+
+            arcade.draw_text(menu_item.name, x, y - i * 50, color, font_size=menu_item_size, anchor_x="left")
 
 
     def on_key_press(self, symbol: int, modifiers: int):

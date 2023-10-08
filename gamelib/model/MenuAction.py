@@ -9,6 +9,9 @@ class MenuAction:
     kwargs: dict = None
 
     def execute(self):
+        if self.action is None:
+            raise NotImplementedError("MenuAction.action == None ---> this action has not yet been implemented")
+
         if self.args is None:
             self.args = []
         if self.kwargs is None:
