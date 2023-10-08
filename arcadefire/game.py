@@ -120,25 +120,18 @@ class MyGame(arcade.Window):
 
     def reset_simulation(self):
         # # Clear all bodies and shapes from the space
-        # for shape in self.space.shapes:
-        #     self.space.remove(shape)
-        # for body in self.space.bodies:
-        #     self.space.remove(body)
+        for shape in self.space.shapes:
+            self.space.remove(shape)
+        for body in self.space.bodies:
+            self.space.remove(body)
         
-        # self.balls = self._initialize_balls()
-        # for ball in self.balls:
-        #     self.space.add(ball.body, ball.shape)
-        
-        # # Create boundary walls and obstacle
-        # self._initialize_boundaries_and_obstacle()
         self._initialize_balls()
-        # self.space.add_collision_handler(1, 1, begin=self.handle_ball_collision)  # 1 is the collision type for balls
-        
+
         # Create boundary walls and obstacle
         self._initialize_boundaries_and_obstacle()
 
         self._initialize_triangle_obstacle()
-    
+
     def on_key_press(self, key, modifiers):
         if key == arcade.key.SPACE:
             self.reset_simulation()
