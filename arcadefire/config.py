@@ -5,7 +5,8 @@ from dataclasses import dataclass
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-BALL_RADIUS = 20
+NUMBER_OF_BALLS = 100
+BALL_RADIUS = 4
 
 
 @dataclass
@@ -35,3 +36,4 @@ class PropertiesofNature:
     class Temperature:
         ambient: float = 300.0  # Room temperature in Kelvin
         max_temperature: float = 2000.0  # White color
+        min_temperature: float = 0.0
