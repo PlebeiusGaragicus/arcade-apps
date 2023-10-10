@@ -7,6 +7,7 @@ import arcade
 from gamelib.model.MenuAction import MenuAction
 from gamelib.view.menu_screen_template import MenuViewTemplate
 
+from grub.app import GAME_WINDOW
 from grub.config import AFK_TIMEOUT
 
 
@@ -44,9 +45,9 @@ class MenuView(MenuViewTemplate):
 
     def on_draw(self):
         arcade.start_render()
-        width, height = self.window.get_size()
-        x = width * 0.1
-        y = height // 2
+
+        x = GAME_WINDOW.width * 0.1
+        y = GAME_WINDOW.height // 2
         for i, menu_item in enumerate(self.menu_actions):
             if i == self.selected_menu_item:
                 color = arcade.color.YELLOW

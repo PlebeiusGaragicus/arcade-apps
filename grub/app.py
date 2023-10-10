@@ -9,6 +9,7 @@ from gamelib.logger import setup_logging
 from gamelib.model.singleton import Singleton
 
 MY_DIR = os.path.dirname(os.path.abspath(__file__))
+
 GAME_WINDOW: arcade.Window = None
 
 
