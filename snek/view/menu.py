@@ -4,8 +4,8 @@ logger = logging.getLogger()
 
 import arcade
 
-from gamelib.model.MenuAction import MenuAction
-from gamelib.view.menu_screen_template import MenuViewTemplate
+from gamelib.menuaction import MenuAction
+
 
 from snek.config import AFK_TIMEOUT
 from snek.app import GAME_WINDOW

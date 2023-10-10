@@ -4,16 +4,22 @@ logger = logging.getLogger()
 
 import arcade
 
-from gamelib.model.MenuAction import MenuAction
-from gamelib.view.menu_screen_template import MenuViewTemplate
+from gamelib.singleton import Singleton
+from gamelib.menuaction import MenuAction
+
 
 from grub.app import GAME_WINDOW
 from grub.config import AFK_TIMEOUT
 
 
-class MenuView(MenuViewTemplate):
+
+class MenuView(arcade.View):
     def __init__(self):
-        super().__init__( AFK_TIMEOUT )
+        super().__init__()
+        self.last_input = time.time()
+        self.afk_timeout = AFK_TIMEOUT
+        self.menu_actions = []
+
         self.selected_menu_item = 0
 
         self.menu_actions.append( MenuAction("Start Game", self.start_game) )
@@ -38,7 +44,7 @@ class MenuView(MenuViewTemplate):
 
 
     def on_update(self, delta_time):
-        if super().is_user_afk():
+        if self.is_user_afk():
             arcade.exit() # TODO - maybe show a "you're afk" screen instead of just exiting the game? (like a screensaver or sample gameplay)
 
 
@@ -61,7 +67,7 @@ class MenuView(MenuViewTemplate):
 
 
     def on_key_press(self, symbol: int, modifiers: int):
-        super().reset_afk_timer()
+        self.reset_afk_timer()
 
         if symbol == arcade.key.UP:
             if self.selected_menu_item > 0:
@@ -79,3 +85,15 @@ class MenuView(MenuViewTemplate):
         elif symbol == arcade.key.ESCAPE:
             logger.info("escape")
             arcade.exit()
+
+
+    def is_user_afk(self) -> bool:
+        # self-destruct in ten seconds if no input (user is AFK)
+        if self.afk_timeout > 0 and \
+            time.time() > self.last_input + self.afk_timeout:
+                logger.warning("AFK timeout reached, exiting game - user is AFK!")
+                return True
+
+
+    def reset_afk_timer(self):
+        self.last_input = time.time()

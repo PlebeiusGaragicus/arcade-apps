@@ -1,4 +1,3 @@
-
 class Singleton:
     _instance = None
     def __init__(self):

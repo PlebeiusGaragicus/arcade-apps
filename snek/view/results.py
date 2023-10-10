@@ -1,16 +1,14 @@
 import time
-from dataclasses import dataclass
-from typing import Callable
 import logging
 logger = logging.getLogger()
 
 import arcade
 
-from gamelib.model.MenuAction import MenuAction
-from gamelib.view.results_screen_template import ResultsViewTemplate
-from snek.view.gameplay import GameplayView
+from gamelib.menuaction import MenuAction
 
 from snek.app import GAME_WINDOW
+from snek.view.gameplay import GameplayView
+
 
 
 

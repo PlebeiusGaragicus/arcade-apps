@@ -6,7 +6,7 @@ logger = logging.getLogger()
 import arcade
 
 from gamelib.logger import setup_logging
-from gamelib.model.singleton import Singleton
+from gamelib.singleton import Singleton
 
 MY_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -28,7 +28,7 @@ class Game(Singleton):
             return cls.configure_instance()
 
     @classmethod
-    def configure_instance(cls, disable_hardware=False):
+    def configure_instance(cls):
         if cls._instance:
             raise Exception("Instance already configured")
         game = cls.__new__(cls)

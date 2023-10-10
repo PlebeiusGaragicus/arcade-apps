@@ -1,22 +1,24 @@
 import time
-from dataclasses import dataclass
-from typing import Callable
 import logging
 logger = logging.getLogger()
 
 import arcade
 
-from gamelib.model.MenuAction import MenuAction
-from gamelib.view.results_screen_template import ResultsViewTemplate
+from gamelib.menuaction import MenuAction
 from grub.view.gameplay import GameplayView
 
 from grub.app import GAME_WINDOW
+from grub.config import AFK_TIMEOUT
 
 
-
-class ResultsView( ResultsViewTemplate ):
+class ResultsView( arcade.View ):
     def __init__(self, gameplay_view: arcade.View):
         super().__init__()
+        self.afk_timeout = AFK_TIMEOUT # if None, then no timeout
+        self.last_input = time.time()
+
+        self.selected_menu_item = 0
+        self.menu_actions = []
 
         self.menu_actions.append( MenuAction("Revive ($)", self.revive) )
         self.menu_actions.append( MenuAction("Give up", self.main_menu) )
@@ -42,7 +44,11 @@ class ResultsView( ResultsViewTemplate ):
 
 
     def on_update(self, delta_time):
-        super().on_update(delta_time)
+        if self.afk_timeout is not None:    
+            if time.time() > self.last_input + self.afk_timeout: # self-destruct in ten seconds if no input (user is AFK)
+                logger.warning("AFK timeout reached, exiting game - user is AFK!")
+                self.main_menu()
+
 
 
     def on_draw(self):
