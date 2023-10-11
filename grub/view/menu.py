@@ -4,7 +4,6 @@ logger = logging.getLogger()
 
 import arcade
 
-from gamelib.singleton import Singleton
 from gamelib.menuaction import MenuAction
 
 

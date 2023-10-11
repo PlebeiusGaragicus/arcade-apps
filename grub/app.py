@@ -4,6 +4,8 @@ import logging
 logger = logging.getLogger()
 
 import arcade
+# for type hinting
+from pyglet.media import Player
 
 from gamelib.logger import setup_logging
 from gamelib.singleton import Singleton
@@ -41,11 +43,15 @@ class Game(Singleton):
         with open( manifest_path ) as f:
             game.manifest = json.load(f)
 
+        window_title = game.manifest['name']
         logger.debug("manifest: %s", game.manifest)
 
         display_width, display_height = arcade.get_display_size()
 
-        window_title = game.manifest['name']
+        game.music_player: Player = None
+
+        
+
 
         # TODO - consider making all windows resizable in order to test layout for multiple monitors
         game.window = arcade.Window(width=display_width, height=display_height, title=window_title, fullscreen=False, style="borderless")
@@ -53,6 +59,20 @@ class Game(Singleton):
         game.window.set_mouse_visible(False)
 
         return cls._instance
+
+
+    def play_sound(self, file_name):
+        sound_path = os.path.join(MY_DIR, 'resources', 'sounds', file_name)
+        theme_sound = arcade.sound.load_sound( sound_path )
+        # theme_len = arcade.sound.Sound.get_length( theme_sound )
+
+        # self.music_player( theme_sound )
+        self.music_player = arcade.sound.play_sound( theme_sound )
+    
+
+    def stop_sound(self):
+        if self.music_player:
+            arcade.sound.stop_sound( self.music_player )
 
 
     def start(self):
@@ -63,7 +83,8 @@ class Game(Singleton):
         from grub.view.splash import SplashScreenView
         from grub.view.menu import MenuView
 
-        view = SplashScreenView( MenuView(), skip_intro=self.manifest.get('skip_intro', False) )
+        # view = SplashScreenView( MenuView(), skip_intro=self.manifest.get('skip_intro', False) )
+        view = SplashScreenView( )
         self.window.show_view(view)
 
         # if self.manifest.get('skip_intro', False):
