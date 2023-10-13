@@ -1,0 +1,1 @@
+from modules.games.star_saver.star_saver import Handler
