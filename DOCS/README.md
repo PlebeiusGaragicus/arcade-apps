@@ -1,5 +1,7 @@
 ### INSTALLING
 
+>> DEPRECATED!!
+
 ```sh
 sudo apt-get install -y git pip
 git clone https://github.com/PlebeiusGaragicus/arcade-game-menu.git
