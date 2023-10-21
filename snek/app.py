@@ -8,8 +8,8 @@ import pygame
 from gamelib.logger import setup_logging
 from gamelib.singleton import Singleton
 
-from pygame_snake.gamestate import GameStateManager
-from pygame_snake.config import *
+from snek.gamestate import GameStateManager
+from snek.config import *
 
 
 
@@ -47,9 +47,9 @@ class App(Singleton):
         application.clock = pygame.time.Clock()
         application.manager = GameStateManager()
 
-        from pygame_snake.views.mainmenu import MainMenu
-        from pygame_snake.views.gameplay import Gameplay
-        from pygame_snake.views.gameover import GameOver
+        from snek.views.mainmenu import MainMenu
+        from snek.views.gameplay import Gameplay
+        from snek.views.gameover import GameOver
         application.manager.add_state("main_menu", MainMenu())
         application.manager.add_state("gameplay", Gameplay())
         application.manager.add_state("game_over", GameOver())

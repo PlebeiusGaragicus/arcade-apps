@@ -1,5 +1,5 @@
 {
-    "name": "pygame-snake",
+    "name": "Snek",
     "skip_intro": true,
     "settings": {
         "difficulty": "easy",

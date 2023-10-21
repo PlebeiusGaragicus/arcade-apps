@@ -2,9 +2,9 @@ import random
 
 import pygame
 
-from pygame_snake.app import App
-from pygame_snake.gamestate import GameState
-from pygame_snake.config import *
+from snek.app import App
+from snek.gamestate import GameState
+from snek.config import *
 
 
 class Gameplay(GameState):

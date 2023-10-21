@@ -1,22 +1,23 @@
 import pygame
+import random
 
-from pygame_snake.app import App
-from pygame_snake.gamestate import GameState
-from pygame_snake.config import *
+from snek.app import App
+from snek.gamestate import GameState
+from snek.config import *
 
 
-class GameOver(GameState):
+class MainMenu(GameState):
     def __init__(self):
         super().__init__()
         self.font = pygame.font.Font(None, 74)
-        self.text = self.font.render('Game Over', True, WHITE)
+        self.text = self.font.render('Snake Game', True, WHITE)
         self.text_rect = self.text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 - 50))
-        self.restart_text = self.font.render('Press Space to Restart', True, WHITE)
-        self.restart_text_rect = self.restart_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 50))
+        self.start_text = self.font.render('Press Space to Start', True, WHITE)
+        self.start_text_rect = self.start_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 50))
 
     def setup(self):
-        pass
-
+        print(f"{self.__class__.__name__} setup")
+    
     def update(self):
         pass
 
@@ -28,4 +29,4 @@ class GameOver(GameState):
     def draw(self, screen):
         screen.fill(BLACK)
         screen.blit(self.text, self.text_rect)
-        screen.blit(self.restart_text, self.restart_text_rect)
+        screen.blit(self.start_text, self.start_text_rect)
